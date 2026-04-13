@@ -1,0 +1,64 @@
+fileFormatVersion: 2
+guid: 1c8ccd481b3afaa4f8c2900898b16570
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 1fa25d03934ea624a82bf2fcee6f0873, type: 3}
+  missingFiles: []
+  errors: []
+  warnings:
+  - Tileset 'Atlas_Buildings' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Buildings' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Objects_Props' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Objects_Rocks' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Objects_Trees' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Atlas_Props' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Atlas_Rocks' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Tileset_Ground' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Tileset_RockSlope' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Tileset_RockSlope_Simple' is an embedded tileset. Exported tilesets
+    are preferred.
+  - Tileset 'Tileset_Water' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Road' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Atlas_Trees_Bushes' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Animation_Flowers_Red' is an embedded tileset. Exported tilesets are
+    preferred.
+  - Tileset 'Animation_Flowers_White' is an embedded tileset. Exported tilesets are
+    preferred.
+  - Tileset 'Campfire' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Tileset_Shadow' is an embedded tileset. Exported tilesets are preferred.
+  - Tileset 'Objects_Shadows' is an embedded tileset. Exported tilesets are preferred.
+  missingSortingLayers: []
+  missingLayers: []
+  missingTags: []
+  importerVersion: 26
+  pixelsPerUnit: 16
+  edgesPerEllipse: 32
+  numberOfObjectsImported: 11873
+  tilesAsObjects: 0
+  sortingMode: 0
+  isIsometric: 0
+  customImporterClassName: 
+  internalTilesets:
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
+  - {instanceID: 0}
