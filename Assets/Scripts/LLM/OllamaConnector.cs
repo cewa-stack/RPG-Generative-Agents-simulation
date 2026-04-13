@@ -49,7 +49,7 @@ public class OllamaConnector : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(request.error);
+                Debug.LogError($"Ollama Error: {request.responseCode} - {request.error}");
                 return null;
             }
 

@@ -5,7 +5,7 @@ public class AgentBrain : MonoBehaviour
 {
     [SerializeField] private OllamaConnector ollama;
     [SerializeField] private AgentMovement movement;
-    [SerializeField] private float thinkInterval = 5f;
+    [SerializeField] private float thinkInterval = 7f;
 
     private float timer;
 
@@ -21,27 +21,31 @@ public class AgentBrain : MonoBehaviour
 
     private async void Think()
     {
-        string prompt = "You are a village resident. Decided what to do next based on your current position. " +
-                        "Options: [STAY, MOVE_RANDOM]. Respond with ONLY the word.";
+        if (ollama == null) return;
+
+        string prompt = "You are an Human-like Agent in a World. Decide your next short-term goal. " +
+                        "Options: [MOVE, STAY]. Respond with ONLY the word.";
+
+        string response = await ollama.AskLlama(prompt);
         
-        string decision = await ollama.AskLlama(prompt);
-        ProcessDecision(decision.Trim().ToUpper());
+        if (!string.IsNullOrEmpty(response))
+        {
+            string decision = response.Trim().ToUpper();
+            Debug.Log($"[AI Decision]: {decision}");
+            ProcessDecision(decision);
+        }
     }
 
     private void ProcessDecision(string decision)
     {
-        if (decision.Contains("MOVE_RANDOM"))
+        if (decision.Contains("MOVE"))
         {
-            Vector2 randomPos = new Vector2(
-                transform.position.x + UnityEngine.Random.Range(-3f, 3f),
-                transform.position.y + UnityEngine.Random.Range(-3f, 3f)
+            float range = 4f;
+            Vector2 randomTarget = new Vector2(
+                transform.position.x + Random.Range(-range, range),
+                transform.position.y + Random.Range(-range, range)
             );
-            movement.SetDestination(randomPos);
-            Debug.Log("[BRAIN]: Moving to new location.");
-        }
-        else
-        {
-            Debug.Log("[BRAIN]: Staying in place.");
+            movement.SetDestination(randomTarget);
         }
     }
 }
