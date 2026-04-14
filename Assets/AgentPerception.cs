@@ -1,32 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class AgentPerception : MonoBehaviour
 {
-    [SerializeField] private float viewRadius = 5f;
-    [SerializeField] private LayerMask observationLayer;
+    [SerializeField] private float radius = 5f;
+    [SerializeField] private LayerMask envLayer;
 
     public List<string> GetNearbyObservations()
     {
-        List<string> observations = new List<string>();
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, viewRadius, observationLayer);
-
-        foreach (var hit in hitColliders)
+        List<string> results = new List<string>();
+        var hits = Physics2D.OverlapCircleAll(transform.position, radius, envLayer);
+        foreach (var hit in hits)
         {
-            SemanticNode node = hit.GetComponent<SemanticNode>();
-            if (node != null)
-            {
-                observations.Add(node.GetObservation());
-            }
+            var node = hit.GetComponent<SemanticNode>();
+            if (node != null) results.Add(node.GetSummary());
         }
-
-        return observations;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, viewRadius);
+        return results;
     }
 }

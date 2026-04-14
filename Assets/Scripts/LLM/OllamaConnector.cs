@@ -28,7 +28,7 @@ public class OllamaResponse
 public class OllamaConnector : MonoBehaviour
 {
     [SerializeField] private string ollamaUrl = "http://localhost:11434/api/generate";
-    [SerializeField] private string modelName = "llama3.1:8b-instruct-q8_0";
+    [SerializeField] private string modelName = "llama3.1:latest";
 
     public async Task<string> AskLlama(string prompt)
     {

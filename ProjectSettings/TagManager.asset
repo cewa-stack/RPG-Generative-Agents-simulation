@@ -41,5 +41,8 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: TopUI
+    uniqueID: 3575232965
+    locked: 0
   m_RenderingLayers:
   - Default

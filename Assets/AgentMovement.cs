@@ -1,57 +1,37 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class AgentMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 3f;
-    private Vector2 targetPosition;
-    private Rigidbody2D rb;
+    private NavMeshAgent navAgent;
     private Animator animator;
-    private bool isMoving = false;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        targetPosition = transform.position;
+        
+        navAgent.updateRotation = false;
+        navAgent.updateUpAxis = false;
     }
 
-    public void SetDestination(Vector2 newTarget)
+    public void SetDestination(Vector2 target)
     {
-        targetPosition = newTarget;
-        isMoving = true;
-    }
-
-    private void FixedUpdate()
-    {
-        if (isMoving)
+        if (navAgent.isOnNavMesh)
         {
-            Vector2 currentPos = rb.position;
-            float distance = Vector2.Distance(currentPos, targetPosition);
-
-            if (distance > 0.1f)
-            {
-                Vector2 direction = (targetPosition - currentPos).normalized;
-                rb.MovePosition(currentPos + direction * moveSpeed * Time.fixedDeltaTime);
-                UpdateAnimation(direction, true);
-            }
-            else
-            {
-                isMoving = false;
-                UpdateAnimation(Vector2.zero, false);
-            }
+            navAgent.SetDestination(target);
         }
     }
 
-    private void UpdateAnimation(Vector2 dir, bool walking)
+    private void Update()
     {
-        if (animator == null) return;
+        bool isMoving = navAgent.velocity.magnitude > 0.1f;
+        animator.SetBool("isWalking", isMoving);
         
-        animator.SetBool("isWalking", walking);
-        
-        if (walking)
+        if (isMoving)
         {
-            animator.SetFloat("Horizontal", dir.x);
-            animator.SetFloat("Vertical", dir.y);
+            animator.SetFloat("Horizontal", navAgent.velocity.x);
+            animator.SetFloat("Vertical", navAgent.velocity.y);
         }
     }
 }

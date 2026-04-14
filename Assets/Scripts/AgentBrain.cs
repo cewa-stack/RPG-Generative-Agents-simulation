@@ -1,51 +1,97 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class AgentBrain : MonoBehaviour
 {
     [SerializeField] private OllamaConnector ollama;
     [SerializeField] private AgentMovement movement;
-    [SerializeField] private float thinkInterval = 7f;
+    [SerializeField] private MemoryStream memory;
+    [SerializeField] private AgentPerception perception;
+    [SerializeField] private SpeechBubble speechBubble;
+    [SerializeField] private float thinkInterval = 10f;
 
-    private float timer;
+    private float _timer;
 
     private void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= thinkInterval)
+        _timer += Time.deltaTime;
+        if (_timer >= thinkInterval)
         {
-            Think();
-            timer = 0;
+            _ = ProcessCognition();
+            _timer = 0;
         }
     }
 
-    private async void Think()
+    private async Task ProcessCognition()
     {
-        if (ollama == null) return;
+        if (ollama == null || perception == null) return;
 
-        string prompt = "You are an Human-like Agent in a World. Decide your next short-term goal. " +
-                        "Options: [MOVE, STAY]. Respond with ONLY the word.";
+        var observations = perception.GetNearbyObservations();
+        string obsText = observations.Count > 0 ? string.Join(", ", observations) : "peaceful village paths";
+        foreach (var o in observations) await memory.AddMemory(o);
+
+        string history = memory.GetRecentContext(2);
+        
+        // Bardzo surowy prompt dla modelu
+        string prompt = $"### Instruction ###\n" +
+                        $"You are an AI NPC. Format your response EXACTLY like this: thought_text | action_word\n" +
+                        $"Allowed actions: MOVE, STAY. Max 10 words total.\n" +
+                        $"Context: {history}\n" +
+                        $"Surroundings: {obsText}\n" +
+                        $"Response: ";
 
         string response = await ollama.AskLlama(prompt);
         
         if (!string.IsNullOrEmpty(response))
         {
-            string decision = response.Trim().ToUpper();
-            Debug.Log($"[AI Decision]: {decision}");
-            ProcessDecision(decision);
+            Debug.Log("[AI]: " + response);
+            ParseAndExecute(response);
         }
     }
 
-    private void ProcessDecision(string decision)
+    private void ParseAndExecute(string response)
     {
-        if (decision.Contains("MOVE"))
+        string thought = "Thinking...";
+        string action = "STAY";
+
+        if (response.Contains("|"))
         {
-            float range = 4f;
-            Vector2 randomTarget = new Vector2(
-                transform.position.x + Random.Range(-range, range),
-                transform.position.y + Random.Range(-range, range)
-            );
-            movement.SetDestination(randomTarget);
+            string[] parts = response.Split('|');
+            thought = parts[0].Trim();
+            action = parts[1].Trim().ToUpper();
         }
+        else
+        {
+            thought = response; // Fallback jeśli Llama zapomni o kresce
+            action = response.ToUpper().Contains("MOVE") ? "MOVE" : "STAY";
+        }
+        
+        speechBubble.Show(thought);
+
+        if (action.Contains("MOVE"))
+        {
+            SetSafeDestination();
+        }
+    }
+
+    private void SetSafeDestination()
+    {
+        for (int i = 0; i < 5; i++) // Próbujemy 5 razy znaleźć wolne miejsce
+        {
+            Vector2 randomDir = Random.insideUnitCircle * 7f;
+            Vector3 targetPos = transform.position + new Vector3(randomDir.x, randomDir.y, 0);
+            
+            // Sprawdzamy czy punkt jest na NavMesh (niebieskiej siatce)
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(targetPos, out hit, 2.0f, NavMesh.AllAreas))
+            {
+                Debug.Log("[NAV]: Found valid spot at " + hit.position);
+                movement.SetDestination(hit.position);
+                return;
+            }
+        }
+        Debug.LogWarning("[NAV]: Could not find safe spot, staying put.");
     }
 }
